@@ -1,17 +1,33 @@
 package com.salesianostriana.dam.proyectoAlejandroRecetas.model;
+
 import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Receta {
 
     @Id
-    @GeneratedValue
-    long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    String nombre;
+    @Column(unique = true)
+    private String nombre;
 
-    Integer tiempoDePreparacion;
+    private Integer tiempoPreparacionMin;
 
-    Enum dificultad;
-    
+    @Enumerated(EnumType.STRING)
+    private Dificultad dificultad;
+
+    @ManyToOne
+    private Categoria categoria;
+
+    @OneToMany(mappedBy = "receta", cascade = CascadeType.ALL)
+    private List<RecetaIngrediente> ingredientes = new ArrayList<>();
 }

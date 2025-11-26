@@ -1,7 +1,6 @@
 package com.salesianostriana.dam.proyectoAlejandroRecetas.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
@@ -9,18 +8,17 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Ingrediente {
+public class RecetaIngrediente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Column(unique = true)
-    private String nombre;
+    @ManyToOne
+    private Receta receta;
 
-    public Ingrediente(String nombre) {
-        this.nombre = nombre;
-    }
+    @ManyToOne
+    private Ingrediente ingrediente;
+
+    private String cantidad; // "200 gramos", "1 litro", etc.
 }
