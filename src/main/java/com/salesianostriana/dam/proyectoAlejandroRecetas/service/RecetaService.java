@@ -3,6 +3,8 @@ package com.salesianostriana.dam.proyectoAlejandroRecetas.service;
 import com.salesianostriana.dam.proyectoAlejandroRecetas.exception.*;
 import com.salesianostriana.dam.proyectoAlejandroRecetas.model.Ingrediente;
 import com.salesianostriana.dam.proyectoAlejandroRecetas.model.Receta;
+import com.salesianostriana.dam.proyectoAlejandroRecetas.model.RecetaIngrediente;
+import com.salesianostriana.dam.proyectoAlejandroRecetas.repository.RecetaIngredienteRepository;
 import com.salesianostriana.dam.proyectoAlejandroRecetas.repository.RecetaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import java.util.List;
 public class RecetaService {
 
     private final RecetaRepository recetaRepository;
+    private final RecetaIngredienteRepository recetaIngredienteRepository;
     private final CategoriaService categoriaService;
     private final IngredienteService ingredienteService;
 
@@ -72,25 +75,27 @@ public class RecetaService {
     }
 
     @Transactional
-    public Receta addIngredienteToReceta(Long recetaId, Long ingredienteId) {
+    public Receta addIngredienteToReceta(Long recetaId, Long ingredienteId, String cantidad) {
         Receta receta = findById(recetaId);
         Ingrediente ingrediente = ingredienteService.findById(ingredienteId);
 
-        // Verificar si el ingrediente ya está en la receta
-        if (receta.getIngredientes().contains(ingrediente)) {
+        if (recetaIngredienteRepository.existsByRecetaIdAndIngredienteId(recetaId, ingredienteId)) {
             throw new IngredienteYaAnadidoException("El ingrediente ya está añadido a la receta");
         }
 
-        receta.getIngredientes().add(ingrediente);
+        RecetaIngrediente recetaIngrediente = new RecetaIngrediente();
+        recetaIngrediente.setReceta(receta);
+        recetaIngrediente.setIngrediente(ingrediente);
+        recetaIngrediente.setCantidad(cantidad);
+
+        receta.getIngredientes().add(recetaIngrediente);
         return recetaRepository.save(receta);
     }
 
     @Transactional
     public void removeIngredienteFromReceta(Long recetaId, Long ingredienteId) {
-        Receta receta = findById(recetaId);
-        Ingrediente ingrediente = ingredienteService.findById(ingredienteId);
-
-        receta.getIngredientes().removeIf(ing -> ing.getId().equals(ingredienteId));
+        Receta receta = findByIdWithIngredientes(recetaId);
+        receta.getIngredientes().removeIf(ri -> ri.getIngrediente().getId().equals(ingredienteId));
         recetaRepository.save(receta);
     }
 }

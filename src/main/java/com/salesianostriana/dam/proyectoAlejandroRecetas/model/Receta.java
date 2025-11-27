@@ -28,11 +28,6 @@ public class Receta {
     @ManyToOne
     private Categoria categoria;
 
-    @ManyToMany
-    @JoinTable(
-            name = "receta_ingrediente",
-            joinColumns = @JoinColumn(name = "receta_id"),
-            inverseJoinColumns = @JoinColumn(name = "ingrediente_id")
-    )
-    private List<Ingrediente> ingredientes = new ArrayList<>();
+    @OneToMany(mappedBy = "receta", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecetaIngrediente> ingredientes = new ArrayList<>();
 }

@@ -15,6 +15,10 @@ public interface RecetaRepository extends JpaRepository<Receta, Long> {
 
     boolean existsByNombre(String nombre);
 
-    @Query("SELECT r FROM Receta r LEFT JOIN FETCH r.ingredientes WHERE r.id = :id")
+    @Query("SELECT r FROM Receta r " +
+            "LEFT JOIN FETCH r.ingredientes ri " +
+            "LEFT JOIN FETCH ri.ingrediente " +
+            "LEFT JOIN FETCH r.categoria " +
+            "WHERE r.id = :id")
     Optional<Receta> findByIdWithIngredientes(@Param("id") Long id);
 }

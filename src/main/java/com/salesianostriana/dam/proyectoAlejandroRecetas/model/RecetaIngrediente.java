@@ -14,11 +14,9 @@ public class RecetaIngrediente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // CORRECTO: Many-to-One hacia Receta
     @ManyToOne
     private Receta receta;
 
-    // CORRECTO: Many-to-One hacia Ingrediente
     @ManyToOne
     private Ingrediente ingrediente;
 

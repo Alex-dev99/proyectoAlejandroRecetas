@@ -22,7 +22,7 @@ public class CategoriaController {
         CategoriaDTO dto = new CategoriaDTO();
         dto.setId(categoria.getId());
         dto.setNombre(categoria.getNombre());
-        dto.setDescripcion(categoria.getDescripcion());
+        dto.setDescripcion(categoria.getDescripcion()); // ← CORREGIDO
         return dto;
     }
 

@@ -34,13 +34,13 @@ public class RecetaController {
         categoriaDTO.setDescripcion(receta.getCategoria().getDescripcion());
         dto.setCategoria(categoriaDTO);
 
-        // Convertir ingredientes (sin cantidad - relación M:M simple)
+        // Convertir ingredientes CON CANTIDAD
         List<RecetaIngredienteDTO> ingredientesDTO = receta.getIngredientes().stream()
-                .map(ingrediente -> {
+                .map(ri -> {
                     RecetaIngredienteDTO riDto = new RecetaIngredienteDTO();
-                    riDto.setNombreIngrediente(ingrediente.getNombre());
-                    // En M:M simple no tenemos cantidad persistida
-                    riDto.setCantidad("");
+                    riDto.setIngredienteId(ri.getIngrediente().getId());
+                    riDto.setNombreIngrediente(ri.getIngrediente().getNombre());
+                    riDto.setCantidad(ri.getCantidad());
                     return riDto;
                 })
                 .collect(Collectors.toList());
@@ -98,10 +98,10 @@ public class RecetaController {
             @PathVariable Long recetaId,
             @RequestBody AddIngredienteToRecetaDTO addIngredienteDTO) {
 
-        // En M:M simple, no usamos la cantidad para persistir
         Receta receta = recetaService.addIngredienteToReceta(
                 recetaId,
-                addIngredienteDTO.getIngredienteId()
+                addIngredienteDTO.getIngredienteId(),
+                addIngredienteDTO.getCantidad()
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToDto(receta));

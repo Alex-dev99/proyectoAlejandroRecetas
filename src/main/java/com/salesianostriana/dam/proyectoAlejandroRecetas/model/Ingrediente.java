@@ -20,6 +20,6 @@ public class Ingrediente {
     @Column(unique = true)
     private String nombre;
 
-    @ManyToMany(mappedBy = "ingredientes")
-    private List<Receta> recetas = new ArrayList<>();
+    @OneToMany(mappedBy = "ingrediente", cascade = CascadeType.ALL)
+    private List<RecetaIngrediente> recetas = new ArrayList<>();
 }
