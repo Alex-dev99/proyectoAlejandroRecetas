@@ -2,13 +2,13 @@ package com.salesianostriana.dam.proyectoAlejandroRecetas.controller;
 
 import com.salesianostriana.dam.proyectoAlejandroRecetas.dto.*;
 import com.salesianostriana.dam.proyectoAlejandroRecetas.model.Receta;
-import com.salesianostriana.dam.proyectoAlejandroRecetas.model.RecetaIngrediente;
 import com.salesianostriana.dam.proyectoAlejandroRecetas.service.CategoriaService;
 import com.salesianostriana.dam.proyectoAlejandroRecetas.service.RecetaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,12 +34,13 @@ public class RecetaController {
         categoriaDTO.setDescripcion(receta.getCategoria().getDescripcion());
         dto.setCategoria(categoriaDTO);
 
-        // Convertir ingredientes
+        // Convertir ingredientes (sin cantidad - relación M:M simple)
         List<RecetaIngredienteDTO> ingredientesDTO = receta.getIngredientes().stream()
-                .map(ri -> {
+                .map(ingrediente -> {
                     RecetaIngredienteDTO riDto = new RecetaIngredienteDTO();
-                    riDto.setNombreIngrediente(ri.getIngrediente().getNombre());
-                    riDto.setCantidad(ri.getCantidad());
+                    riDto.setNombreIngrediente(ingrediente.getNombre());
+                    // En M:M simple no tenemos cantidad persistida
+                    riDto.setCantidad("");
                     return riDto;
                 })
                 .collect(Collectors.toList());
@@ -97,10 +98,10 @@ public class RecetaController {
             @PathVariable Long recetaId,
             @RequestBody AddIngredienteToRecetaDTO addIngredienteDTO) {
 
+        // En M:M simple, no usamos la cantidad para persistir
         Receta receta = recetaService.addIngredienteToReceta(
                 recetaId,
-                addIngredienteDTO.getIngredienteId(),
-                addIngredienteDTO.getCantidad()
+                addIngredienteDTO.getIngredienteId()
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToDto(receta));

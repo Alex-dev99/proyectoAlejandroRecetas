@@ -1,26 +1,25 @@
 package com.salesianostriana.dam.proyectoAlejandroRecetas.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Ingrediente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @Column(unique = true)
     private String nombre;
 
-    public Ingrediente(String nombre) {
-        this.nombre = nombre;
-    }
+    @ManyToMany(mappedBy = "ingredientes")
+    private List<Receta> recetas = new ArrayList<>();
 }
