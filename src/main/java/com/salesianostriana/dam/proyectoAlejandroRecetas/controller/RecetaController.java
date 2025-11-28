@@ -27,14 +27,12 @@ public class RecetaController {
         dto.setTiempoPreparacionMin(receta.getTiempoPreparacionMin());
         dto.setDificultad(receta.getDificultad());
 
-        // Convertir categoría
         CategoriaDTO categoriaDTO = new CategoriaDTO();
         categoriaDTO.setId(receta.getCategoria().getId());
         categoriaDTO.setNombre(receta.getCategoria().getNombre());
         categoriaDTO.setDescripcion(receta.getCategoria().getDescripcion());
         dto.setCategoria(categoriaDTO);
 
-        // Convertir ingredientes CON CANTIDAD
         List<RecetaIngredienteDTO> ingredientesDTO = receta.getIngredientes().stream()
                 .map(ri -> {
                     RecetaIngredienteDTO riDto = new RecetaIngredienteDTO();
